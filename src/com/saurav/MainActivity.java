@@ -2,6 +2,8 @@ package com.saurav;
 
 import java.io.IOException;
 
+import com.google.api.client.googleapis.extensions.android.accounts.GoogleAccountManager;
+
 import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
@@ -10,9 +12,6 @@ import android.accounts.OperationCanceledException;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
-
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.extensions.android.accounts.GoogleAccountManager;
 
 public class MainActivity extends Activity {
 
@@ -27,18 +26,23 @@ public class MainActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.activity_main);
 		chooseAccount();
+		super.onCreate(savedInstanceState);
 	}
 
 	private void chooseAccount() {
-		AccountManager.get(this).getAuthTokenByFeatures(GoogleAccountManager.ACCOUNT_TYPE, AUTH_TOKEN_TYPE, null,
-				MainActivity.this, null, null, new AccountManagerCallback<Bundle>() {
+		AccountManager.get(this).getAuthTokenByFeatures(
+				GoogleAccountManager.ACCOUNT_TYPE, AUTH_TOKEN_TYPE, null,
+				MainActivity.this, null, null,
+				new AccountManagerCallback<Bundle>() {
 
 					public void run(AccountManagerFuture<Bundle> future) {
 						Bundle bundle;
 						try {
 							bundle = future.getResult();
-							setAccountName(bundle.getString(AccountManager.KEY_ACCOUNT_NAME));
-							setAuthToken(bundle.getString(AccountManager.KEY_AUTHTOKEN));
+							setAccountName(bundle
+									.getString(AccountManager.KEY_ACCOUNT_NAME));
+							setAuthToken(bundle
+									.getString(AccountManager.KEY_AUTHTOKEN));
 
 							// do something with auth token
 
