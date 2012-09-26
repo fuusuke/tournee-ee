@@ -14,10 +14,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Spinner;
 
-public class MainActivity extends Activity implements OnItemSelectedListener {
+public class MainActivity extends Activity implements OnItemClickListener {
 
 	private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -36,7 +37,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener {
 	private void chooseAccount() {
 		try {
 			mPreferences = getSharedPreferences("bond", MODE_PRIVATE);
-			if (mPreferences == null) {
+			if (mPreferences == null || isEmpty(mPreferences)) {
 				saveCredentials();
 			}
 		} catch (Exception e) {
@@ -47,16 +48,24 @@ public class MainActivity extends Activity implements OnItemSelectedListener {
 		// getAuthToken();
 	}
 
+	private boolean isEmpty(SharedPreferences mPreferences2) {
+		final String uname = mPreferences.getString("uname", "nothing");
+		if (uname.equals("nothing"))
+			return true;
+		else
+			return false;
+	}
+
 	private void saveCredentials() {
 		final Account[] accounts = AccountManager.get(this).getAccounts();
 
 		Spinner spin = (Spinner) findViewById(R.id.spinner);
-		spin.setOnItemSelectedListener(this);
 
 		AccountSpinnerAdapter accountSpinnerAdapter = new AccountSpinnerAdapter(this, accounts);
 		spin.setAdapter(accountSpinnerAdapter);
 
-		spin.setOnItemSelectedListener(this);
+		spin.setOnItemClickListener(this);
+
 	}
 
 	private void getAuthToken() {
@@ -94,12 +103,6 @@ public class MainActivity extends Activity implements OnItemSelectedListener {
 		this.accountName = accountName;
 	}
 
-	@Override
-	public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-		Account account = (Account) arg0.getAdapter().getItem(arg2);
-		writeToPreference(account);
-	}
-
 	private void writeToPreference(Account account) {
 		mPreferences = getSharedPreferences("bond", MODE_PRIVATE);
 		SharedPreferences.Editor editor = mPreferences.edit();
@@ -108,8 +111,9 @@ public class MainActivity extends Activity implements OnItemSelectedListener {
 	}
 
 	@Override
-	public void onNothingSelected(AdapterView<?> arg0) {
-
+	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+		Account account = (Account) arg0.getAdapter().getItem(arg2);
+		writeToPreference(account);
 	}
 
 }
