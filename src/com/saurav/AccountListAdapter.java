@@ -12,13 +12,13 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-public class AccountSpinnerAdapter extends BaseAdapter {
+public class AccountListAdapter extends BaseAdapter {
 
-	private static final String TAG = AccountSpinnerAdapter.class.getSimpleName();
+	private static final String TAG = AccountListAdapter.class.getSimpleName();
 	private List<Account> accountList;
 	private Context context;
 
-	public AccountSpinnerAdapter(Context context, Account[] accounts) {
+	public AccountListAdapter(Context context, Account[] accounts) {
 		this.context = context;
 		this.accountList = getFilteredList(accounts);
 	}

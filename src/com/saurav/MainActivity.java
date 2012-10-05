@@ -15,8 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.Spinner;
+import android.widget.ListView;
 
 public class MainActivity extends Activity implements OnItemClickListener {
 
@@ -58,26 +57,27 @@ public class MainActivity extends Activity implements OnItemClickListener {
 
 	private void saveCredentials() {
 		final Account[] accounts = AccountManager.get(this).getAccounts();
-
-		Spinner spin = (Spinner) findViewById(R.id.spinner);
-
-		AccountSpinnerAdapter accountSpinnerAdapter = new AccountSpinnerAdapter(this, accounts);
-		spin.setAdapter(accountSpinnerAdapter);
-
-		spin.setOnItemClickListener(this);
+		ListView accountListView = (ListView) findViewById(R.id.accountlist);
+		AccountListAdapter accountListAdapter = new AccountListAdapter(this,
+				accounts);
+		accountListView.setAdapter(accountListAdapter);
+		accountListView.setOnItemClickListener(this);
 
 	}
 
 	private void getAuthToken() {
-		AccountManager.get(this).getAuthTokenByFeatures("com.google", AUTH_TOKEN_TYPE, null, this, null, null,
+		AccountManager.get(this).getAuthTokenByFeatures("com.google",
+				AUTH_TOKEN_TYPE, null, this, null, null,
 				new AccountManagerCallback<Bundle>() {
 
 					public void run(AccountManagerFuture<Bundle> future) {
 						Bundle bundle;
 						try {
 							bundle = future.getResult();
-							setAccountName(bundle.getString(AccountManager.KEY_ACCOUNT_NAME));
-							setAuthToken(bundle.getString(AccountManager.KEY_AUTHTOKEN));
+							setAccountName(bundle
+									.getString(AccountManager.KEY_ACCOUNT_NAME));
+							setAuthToken(bundle
+									.getString(AccountManager.KEY_AUTHTOKEN));
 
 							// do something with auth token
 
@@ -114,6 +114,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		Account account = (Account) arg0.getAdapter().getItem(arg2);
 		writeToPreference(account);
+		// start new activity
 	}
 
 }
